@@ -52,17 +52,17 @@ export const sendEmail = async (
 export const sendResetCodeEmail = async (to: string, code: string): Promise<void> => {
   const subject = "Password Reset Code";
   const html = `
-    <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px;
-                border: 1px solid #e2e8f0; border-radius: 8px;">
-      <h2 style="color: #1e40af; margin-top: 0;">Password Reset Request</h2>
-      <p>Hello,</p>
-      <p>Here is your password reset verification code:</p>
-      <div style="background-color: #f1f5f9; padding: 16px; border-radius: 6px;
+    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 500px; margin: 0 auto; padding: 24px;
+                background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px;">
+      <h2 style="color: #111827; margin-top: 0; font-size: 20px;">Password Reset Request</h2>
+      <p style="color: #374151;">Hello,</p>
+      <p style="color: #374151;">Here is your password reset verification code:</p>
+      <div style="background-color: #f3f4f6; padding: 16px; border-radius: 6px;
                   text-align: center; font-size: 24px; font-weight: bold;
-                  letter-spacing: 4px; color: #1e3a8a;">
+                  letter-spacing: 4px; color: #111827; border: 1px solid #e5e7eb;">
         ${code}
       </div>
-      <p style="color: #64748b; font-size: 14px; margin-top: 16px;">
+      <p style="color: #6b7280; font-size: 13px; margin-top: 16px;">
         This code expires in 10 minutes. If you did not request a reset, ignore this email.
       </p>
     </div>
