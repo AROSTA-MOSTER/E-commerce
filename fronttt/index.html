@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>N.Honest Supermarket | Online Grocery Shopping in Rwanda </title>
+  
+  <meta name="description" content="Shop groceries, fresh food, household essentials, personal care, beverages, baby products, and more online with N.Honest Supermarket. 30-40 minute delivery in Kigali.">
+  <meta name="keywords" content="N.Honest Supermarket, online supermarket Rwanda, grocery delivery Kigali, Rwanda grocery store, fresh food delivery, supermarket in Kigali, online shopping Rwanda, MTN MoMo grocery">
+  
+  <!-- Preload Fonts & Assets -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Open+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  
+  <!-- CSS Framework & Plugins -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css">
+  
+  <!-- Custom Vendor & Style -->
+  <link rel="stylesheet" href="css/vendor.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Preloader -->
+  <div class="preloader-wrapper">
+    <div class="preloader"></div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="position-fixed top-0 end-0 p-3" style="z-index: 1060;"></div>
+
+  <!-- Shopping Cart Offcanvas -->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasCart" aria-labelledby="offcanvasCartLabel">
+    <div class="offcanvas-header border-bottom">
+      <h5 class="offcanvas-title fw-bold" id="offcanvasCartLabel">
+        <i class="fas fa-shopping-cart text-danger me-2"></i> Your Shopping Cart
+      </h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+
+    <div class="offcanvas-body d-flex flex-column">
+      <!-- Cart Items List -->
+      <div id="cart-items-container" class="flex-grow-1 overflow-auto">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- Cart Summary -->
+      <div id="cart-summary" class="border-top pt-3 mt-auto" style="display: none;">
+        <div class="d-flex justify-content-between mb-2">
+          <span>Subtotal:</span>
+          <span id="cart-subtotal" class="fw-semibold">RWF 0</span>
+        </div>
+        <div class="d-flex justify-content-between mb-3">
+          <span class="fw-bold">Total (incl. Delivery):</span>
+          <span id="cart-total" class="fw-bold text-success fs-5">RWF 0</span>
+        </div>
+        <div class="d-grid gap-2">
+          <button id="proceed-to-checkout" class="btn btn-danger py-2 fw-bold" data-bs-toggle="modal" data-bs-target="#checkoutModal">
+            <i class="fas fa-shopping-bag me-2"></i> Proceed to Checkout
+          </button>
+          <button id="clear-cart" class="btn btn-outline-secondary btn-sm">
+            <i class="fas fa-trash me-2"></i> Clear Cart
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header Section -->
+  <header class="site-header sticky-top bg-white">
+    <!-- Main Header Bar -->
+    <div class="py-3 border-bottom">
+      <div class="container">
+        <div class="row align-items-center g-3">
+          <!-- Logo -->
+          <div class="col-lg-3 col-6">
+            <a href="index.html" class="d-inline-flex align-items-center text-decoration-none">
+              <span class="p-2 bg-danger bg-opacity-10 rounded-circle me-2 text-danger fs-3"><i class="fas fa-store"></i></span>
+              <span class="d-flex flex-column lh-sm">
+                <span class="fw-black fs-4 text-danger brand-name">N.Honest</span>
+                <small class="text-success fw-bold" style="font-size: 0.78rem;">Rwanda's Choice</small>
+              </span>
+            </a>
+          </div>
+
+          <!-- Live Search Bar -->
+          <div class="col-lg-6 d-none d-lg-block">
+            <div class="search-bar">
+              <input type="text" id="search-input" placeholder="Search groceries, beverages, brands...">
+              <button id="search-button" class="search-btn" aria-label="Search">
+                <i class="fas fa-search"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- User & Cart Controls -->
+          <div class="col-lg-3 col-6">
+            <div class="d-flex align-items-center justify-content-end gap-2">
+              <div id="auth-header-container" class="dropdown">
+                <a href="#" class="account-btn dropdown-toggle" id="account-dropdown-toggle" data-bs-toggle="modal" data-bs-target="#accountModal">
+                  <img src="https://ui-avatars.com/api/?name=Customer&background=1E6C41&color=fff" alt="Account" class="acc-avatar" id="header-avatar-img">
+                  <span class="d-none d-md-inline" id="header-username">Sign In</span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 p-2" id="account-dropdown-menu">
+                  <li class="px-3 py-2 border-bottom">
+                    <div class="fw-bold text-truncate" id="menu-user-name">User Name</div>
+                    <small class="text-muted d-block text-truncate" id="menu-user-email">email@example.com</small>
+                    <span class="badge bg-danger mt-1" id="menu-user-role">Customer</span>
+                  </li>
+                  <li><a class="dropdown-item py-2 text-danger" href="#" id="menu-logout-btn"><i class="fas fa-arrow-right-from-bracket me-2"></i>Sign Out</a></li>
+                </ul>
+              </div>
+              <a href="#" class="header-action-btn" id="wishlist-btn" title="Wishlist">
+                <i class="fas fa-heart text-danger"></i>
+                <span class="badge-count" id="wishlist-count">0</span>
+              </a>
+              <a href="#" class="header-action-btn" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCart" title="Cart">
+                <i class="fas fa-shopping-cart text-success"></i>
+                <span class="badge-count" id="cart-count">0</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section id="hero">
+    <div class="hero-slider position-relative" style="background: linear-gradient(135deg, #1f2937 0%, #111827 100%); height: 420px;">
+      <div class="container h-100 position-relative" style="z-index: 2;">
+        <div class="row h-100 align-items-center">
+          <div class="col-lg-7 text-white">
+            <h1 class="display-4 fw-bold mb-3 text-white">
+              Fresh Foods & <span class="text-success">Quality Essentials</span>
+            </h1>
+            <p class="fs-5 mb-0 text-white-50">
+              Order fresh fruits, vegetables, beverages, household supplies, and daily supermarket groceries with rapid delivery in Kigali.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Products Section with Filtering & Pagination -->
+  <section class="py-5" id="products-section">
+    <div class="container">
+      <!-- Section Header -->
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4 pb-3 border-bottom">
+        <div>
+          <h2 class="h3 fw-bold mb-1">Our Products</h2>
+          <p class="text-muted mb-0 small">Fresh groceries & packaged items delivered straight to your door</p>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2">
+          <!-- Search in section -->
+          <div class="input-group" style="max-width: 260px;">
+            <input type="text" id="products-search-input" class="form-control form-control-sm" placeholder="Filter products...">
+            <button class="btn btn-outline-danger btn-sm" id="products-search-button">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+
+          <!-- Sort Dropdown -->
+          <div class="dropdown">
+            <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+              <i class="fas fa-sort me-1"></i> Sort
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+              <li><a class="dropdown-item sort-option" href="#" data-sort="price-asc">Price: Low to High</a></li>
+              <li><a class="dropdown-item sort-option" href="#" data-sort="price-desc">Price: High to Low</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item sort-option" href="#" data-sort="name-asc">Name: A to Z</a></li>
+              <li><a class="dropdown-item sort-option" href="#" data-sort="name-desc">Name: Z to A</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Filters Display -->
+      <div class="row mb-4" id="active-filters-container" style="display: none;">
+        <div class="col-12">
+          <div class="bg-white p-3 rounded-4 shadow-sm d-flex align-items-center flex-wrap gap-2">
+            <span class="text-muted small me-2"><i class="fas fa-filter me-1"></i> Active Filters:</span>
+            <div id="active-filters" class="d-flex flex-wrap gap-2"></div>
+            <button class="btn btn-sm btn-link text-danger ms-auto p-0" onclick="window.clearFilter('search');">Clear All</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div class="row" id="loading-products" style="display: none;">
+        <div class="col-12 text-center py-5 bg-white rounded-4 shadow-sm">
+          <div class="spinner-grow text-danger mx-auto" style="width: 3rem; height: 3rem;" role="status"></div>
+          <h5 class="mt-4 text-danger">Loading Products...</h5>
+          <p class="text-muted small">Fetching real-time inventory from N.Honest backend</p>
+        </div>
+      </div>
+
+      <!-- Products Grid Shell -->
+      <div class="products-grid-shell" id="products-container">
+        <!-- Rendered by app.js -->
+      </div>
+
+      <!-- Empty State -->
+      <div class="row" id="empty-products" style="display: none;">
+        <div class="col-12 text-center py-5 bg-white rounded-4 shadow-sm">
+          <i class="fas fa-box-open fa-4x text-muted mb-3"></i>
+          <h5>No Products Found</h5>
+          <p class="text-muted">No items matched your current filter or search criteria.</p>
+          <button class="btn btn-danger mt-2" onclick="window.clearFilter('search');">Reset Filters</button>
+        </div>
+      </div>
+
+      <!-- Dynamic Pagination Container -->
+      <div class="row mt-4">
+        <div class="col-12">
+          <nav aria-label="Product pagination" id="pagination-container">
+            <!-- Rendered by app.js with structure ?page=2 -->
+          </nav>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick View Modal -->
+  <div class="modal fade" id="quickViewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div class="row">
+            <div class="col-md-6 mb-3 mb-md-0 d-flex align-items-center justify-content-center bg-light rounded-4 p-3">
+              <img src="" alt="" id="quickview-main-image" class="img-fluid" style="max-height: 280px; object-fit: contain;">
+            </div>
+            <div class="col-md-6">
+              <h4 class="fw-bold mb-2" id="quickview-title"></h4>
+              <h3 class="text-danger fw-bold mb-3" id="quickview-price"></h3>
+              <p class="text-muted small mb-4" id="quickview-description"></p>
+
+              <!-- Size Variants -->
+              <div id="quickview-variants" class="mb-4" style="display: none;">
+                <div id="size-variants"></div>
+              </div>
+
+              <!-- Quantity Selector -->
+              <div class="d-flex align-items-center gap-3">
+                <input type="number" id="quickview-quantity" class="form-control text-center" value="1" min="1" max="99" style="width: 80px;">
+                <button class="btn btn-danger flex-grow-1 py-2 fw-bold" id="quickview-add-to-cart">
+                  <i class="fas fa-cart-plus me-2"></i> Add to Cart
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Multi-Step Checkout Modal -->
+  <div class="modal fade" id="checkoutModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold"><i class="fas fa-lock text-success me-2"></i> Secure Checkout</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <!-- Step 1: Customer Info -->
+          <div class="checkout-step" id="step-customer-info">
+            <h6 class="fw-bold mb-3">1. Customer Information</h6>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Full Name</label>
+                <input type="text" class="form-control" id="fullName" placeholder="John Doe" value="Valued Customer" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Email Address</label>
+                <input type="email" class="form-control" id="customerEmail" placeholder="client@example.com" value="client@example.com" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Phone Number</label>
+                <div class="input-group">
+                  <span class="input-group-text">+250</span>
+                  <input type="tel" class="form-control" id="phoneNumber" placeholder="78XXXXXXX" value="788633739" required>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex justify-content-end mt-4">
+              <button type="button" class="btn btn-danger next-step" data-step="delivery">
+                Continue to Delivery <i class="fas fa-arrow-right ms-2"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 2: Delivery Details -->
+          <div class="checkout-step" id="step-delivery" style="display: none;">
+            <h6 class="fw-bold mb-3">2. Delivery Location (Kigali, Rwanda)</h6>
+            <div class="row g-3">
+              <div class="col-12">
+                <label class="form-label">Exact Delivery Address / Landmark</label>
+                <textarea class="form-control" id="address" rows="2" required>KG 123 St, Kimihurura, Kigali</textarea>
+              </div>
+            </div>
+            <div class="d-flex justify-content-between mt-4">
+              <button type="button" class="btn btn-outline-secondary prev-step" data-step="customer-info">Back</button>
+              <button type="button" class="btn btn-danger next-step" data-step="review">Review Order & Invoice</button>
+            </div>
+          </div>
+
+          <!-- Step 3: Order Review & Invoice Preview -->
+          <div class="checkout-step" id="step-review" style="display: none;">
+            <h6 class="fw-bold mb-3">3. Review Order & Invoice</h6>
+            <div class="border rounded p-3 mb-3 bg-light">
+              <div class="row small mb-2">
+                <div class="col-6"><strong>Client:</strong> <span id="summary-name"></span></div>
+                <div class="col-6"><strong>Phone:</strong> <span id="summary-phone"></span></div>
+                <div class="col-12"><strong>Address:</strong> <span id="summary-address"></span></div>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-sm">
+                  <thead>
+                    <tr><th>Item</th><th class="text-center">Qty</th><th class="text-end">Price</th><th class="text-end">Total</th></tr>
+                  </thead>
+                  <tbody id="summary-items"></tbody>
+                  <tfoot>
+                    <tr><td colspan="3" class="text-end">Subtotal:</td><td class="text-end fw-bold" id="summary-subtotal"></td></tr>
+                    <tr><td colspan="3" class="text-end">Delivery:</td><td class="text-end" id="summary-delivery"></td></tr>
+                    <tr class="table-active"><td colspan="3" class="text-end fw-bold">Total Due:</td><td class="text-end fw-bold text-success" id="summary-total"></td></tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+            <div class="d-flex justify-content-between">
+              <button type="button" class="btn btn-outline-secondary prev-step" data-step="delivery">Back</button>
+              <button type="button" class="btn btn-danger next-step" data-step="confirm">Proceed to Payment Method</button>
+            </div>
+          </div>
+
+          <!-- Step 4: Payment Confirmation -->
+          <div class="checkout-step" id="step-confirm" style="display: none;">
+            <h6 class="fw-bold mb-3">4. Select Payment Method</h6>
+            <div class="p-3 border rounded bg-light mb-3">
+              <div class="form-check mb-3">
+                <input class="form-check-input" type="radio" name="paymentOption" id="payDelivery" checked>
+                <label class="form-check-label fw-bold" for="payDelivery">
+                  <i class="fas fa-hand-holding-dollar text-success me-2"></i> Pay on Delivery (Cash or Card)
+                </label>
+                <small class="text-muted d-block ms-4">Pay securely upon receiving your supermarket items at your doorstep.</small>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="paymentOption" id="payDirect">
+                <label class="form-check-label fw-bold" for="payDirect">
+                  <i class="fas fa-credit-card text-primary me-2"></i> Card / Mobile Terminal on Delivery
+                </label>
+                <small class="text-muted d-block ms-4">Complete payment when delivery rider arrives with the wireless terminal.</small>
+              </div>
+            </div>
+            <div class="d-flex justify-content-between">
+              <button type="button" class="btn btn-outline-secondary prev-step" data-step="review">Back</button>
+              <button type="button" class="btn btn-success fw-bold" id="place-order-btn">
+                <i class="fas fa-check-circle me-2"></i> Place Order Now
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 5: Completed -->
+          <div class="checkout-step" id="step-complete" style="display: none;">
+            <div class="text-center py-4">
+              <i class="fas fa-check-circle text-success fa-4x mb-3"></i>
+              <h4 class="fw-bold">Order Placed Successfully!</h4>
+              <p class="text-muted">Order Reference: <strong class="text-danger" id="order-reference"></strong></p>
+              <p class="small text-muted">A digital invoice has been registered. Our delivery rider will contact you within 30-40 minutes.</p>
+              <button type="button" class="btn btn-primary mt-3" data-bs-dismiss="modal">Continue Shopping</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Account Modal (Connected to Express Auth Endpoints) -->
+  <div class="modal fade" id="accountModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content shadow-lg border-0 rounded-4">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold text-dark"><i class="fas fa-user-circle text-danger me-2"></i>N.Honest Account Portal</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <ul class="nav nav-pills nav-fill mb-3 bg-light p-1 rounded-pill" id="authTabs" role="tablist">
+            <li class="nav-item">
+              <button class="nav-link active rounded-pill fw-bold" id="tab-login-btn" data-bs-toggle="pill" data-bs-target="#login-tab">Sign In</button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link rounded-pill fw-bold" id="tab-signup-btn" data-bs-toggle="pill" data-bs-target="#signup-tab">Sign Up</button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link rounded-pill fw-bold" id="tab-reset-btn" data-bs-toggle="pill" data-bs-target="#reset-tab">Reset Code</button>
+            </li>
+          </ul>
+
+          <div class="tab-content">
+            <!-- LOGIN TAB -->
+            <div class="tab-pane fade show active" id="login-tab">
+              <div id="login-alert-box" class="alert alert-danger py-2 px-3 small d-none" role="alert"></div>
+              <form id="auth-login-form">
+                <div class="mb-3">
+                  <label class="form-label small fw-bold text-secondary">Email Address</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-white"><i class="fas fa-envelope text-muted"></i></span>
+                    <input type="email" class="form-control" id="login-email" required placeholder="client@example.com">
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <div class="d-flex justify-content-between align-items-center mb-1">
+                    <label class="form-label small fw-bold text-secondary mb-0">Password</label>
+                    <a href="#" class="small text-danger text-decoration-none" id="forgot-password-link">Forgot password?</a>
+                  </div>
+                  <div class="input-group">
+                    <span class="input-group-text bg-white"><i class="fas fa-lock text-muted"></i></span>
+                    <input type="password" class="form-control" id="login-password" required placeholder="••••••••">
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-danger w-100 fw-bold py-2 mt-2" id="login-submit-btn">
+                  <span class="spinner-border spinner-border-sm me-2 d-none" id="login-spinner"></span>
+                  <i class="fas fa-arrow-right-to-bracket me-2"></i>Sign In
+                </button>
+              </form>
+            </div>
+
+            <!-- SIGN UP TAB -->
+            <div class="tab-pane fade" id="signup-tab">
+              <div id="signup-alert-box" class="alert alert-danger py-2 px-3 small d-none" role="alert"></div>
+              <form id="auth-signup-form">
+                <div class="mb-3">
+                  <label class="form-label small fw-bold text-secondary">Full Name</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-white"><i class="fas fa-user text-muted"></i></span>
+                    <input type="text" class="form-control" id="signup-name" required placeholder="Faustin N.">
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label small fw-bold text-secondary">Email Address</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-white"><i class="fas fa-envelope text-muted"></i></span>
+                    <input type="email" class="form-control" id="signup-email" required placeholder="faustin@example.com">
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label small fw-bold text-secondary">Password (min 6 characters)</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-white"><i class="fas fa-lock text-muted"></i></span>
+                    <input type="password" class="form-control" id="signup-password" minlength="6" required placeholder="••••••••">
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-success w-100 fw-bold py-2 mt-2" id="signup-submit-btn">
+                  <span class="spinner-border spinner-border-sm me-2 d-none" id="signup-spinner"></span>
+                  <i class="fas fa-user-plus me-2"></i>Create Account
+                </button>
+              </form>
+            </div>
+
+            <!-- RESET PASSWORD TAB -->
+            <div class="tab-pane fade" id="reset-tab">
+              <div id="reset-alert-box" class="alert alert-info py-2 px-3 small d-none" role="alert"></div>
+              
+              <!-- Sub-step 1: Request OTP -->
+              <div id="reset-step-1">
+                <p class="small text-muted mb-3">Enter your email and we'll send a 6-digit code to reset your password via email.</p>
+                <form id="auth-forgot-form">
+                  <div class="mb-3">
+                    <label class="form-label small fw-bold text-secondary">Email Address</label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-white"><i class="fas fa-envelope text-muted"></i></span>
+                      <input type="email" class="form-control" id="forgot-email" required placeholder="client@example.com">
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-warning text-dark w-100 fw-bold py-2" id="forgot-submit-btn">
+                    <span class="spinner-border spinner-border-sm me-2 d-none" id="forgot-spinner"></span>
+                    <i class="fas fa-paper-plane me-2"></i>Send 6-Digit OTP
+                  </button>
+                </form>
+              </div>
+
+              <!-- Sub-step 2: Verify Code and Set New Password -->
+              <div id="reset-step-2" class="d-none mt-3">
+                <form id="auth-reset-form">
+                  <div class="mb-2">
+                    <label class="form-label small fw-bold text-secondary">6-Digit Code (from your email)</label>
+                    <input type="text" class="form-control text-center fw-bold fs-5" id="reset-code" maxlength="6" pattern="[0-9]{6}" required placeholder="123456">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label small fw-bold text-secondary">New Password (min 6 characters)</label>
+                    <input type="password" class="form-control" id="reset-newpassword" minlength="6" required placeholder="New secure password">
+                  </div>
+                  <button type="submit" class="btn btn-danger w-100 fw-bold py-2" id="reset-submit-btn">
+                    <span class="spinner-border spinner-border-sm me-2 d-none" id="reset-spinner"></span>
+                    <i class="fas fa-key me-2"></i>Save New Password
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Product Modal (Connected to POST /api/products) -->
+  <div class="modal fade" id="addProductModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content shadow-lg border-0 rounded-4">
+        <div class="modal-header border-bottom">
+          <h5 class="modal-title fw-bold text-dark"><i class="fas fa-box-open text-danger me-2"></i>Add Product to Live Store</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div id="add-product-alert" class="alert alert-danger py-2 px-3 small d-none" role="alert"></div>
+          <form id="add-product-form">
+            <div class="mb-3">
+              <label class="form-label small fw-bold text-secondary">Product Name *</label>
+              <input type="text" class="form-control" id="new-prod-name" required placeholder="e.g. Rwandan Arabica Coffee 500g">
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-bold text-secondary">Price (RWF) *</label>
+              <input type="number" class="form-control" id="new-prod-price" min="1" required placeholder="e.g. 8500">
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-bold text-secondary">Description *</label>
+              <textarea class="form-control" id="new-prod-description" rows="2" required placeholder="Fresh quality item delivered within Kigali..."></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-bold text-secondary">Product Image</label>
+              <input type="file" class="form-control mb-2" id="new-prod-file" accept="image/*">
+              <small class="text-muted d-block mb-1">Or direct image URL:</small>
+              <input type="url" class="form-control form-control-sm" id="new-prod-imageurl" placeholder="https://images.unsplash.com/...">
+            </div>
+            <button type="submit" class="btn btn-danger w-100 fw-bold py-2" id="add-prod-submit-btn">
+              <span class="spinner-border spinner-border-sm me-2 d-none" id="add-prod-spinner"></span>
+              <i class="fas fa-cloud-arrow-up me-2"></i>Publish Product to Catalog
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modern Footer -->
+  <footer class="bg-dark text-white pt-5 pb-4 mt-5">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-4">
+          <h5 class="fw-bold text-danger mb-3">N.Honest Supermarket</h5>
+          <p class="text-white-50 small">Your trusted grocery partner across Rwanda. Fresh quality vegetables, fruits, beverages, meat, dairy, and household essentials with 30-40 min rapid delivery.</p>
+          <div class="d-flex gap-3 text-white-50">
+            <i class="fab fa-facebook-f"></i>
+            <i class="fab fa-instagram"></i>
+            <i class="fab fa-twitter"></i>
+            <i class="fab fa-youtube"></i>
+          </div>
+        </div>
+        <div class="col-lg-2 col-6">
+          <h6 class="fw-bold mb-3">Quick Links</h6>
+          <ul class="list-unstyled small text-white-50 lh-lg">
+            <li><a href="index.html" class="text-white-50 text-decoration-none">Home</a></li>
+            <li><a href="#products-section" class="text-white-50 text-decoration-none">Products</a></li>
+            <li><a href="#" class="text-white-50 text-decoration-none">Track Order</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-3 col-6">
+          <h6 class="fw-bold mb-3">Customer Service</h6>
+          <ul class="list-unstyled small text-white-50 lh-lg">
+            <li><a href="#" class="text-white-50 text-decoration-none">Delivery Areas</a></li>
+            <li><a href="#" class="text-white-50 text-decoration-none">Terms of Service</a></li>
+            <li><a href="#" class="text-white-50 text-decoration-none">Privacy Policy</a></li>
+            <li><a href="#" class="text-white-50 text-decoration-none">Return Policy</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-3">
+          <h6 class="fw-bold mb-3">Payment & Delivery</h6>
+          <p class="small text-white-50">Safe, flexible payment on delivery or in-store pickup across Kigali.</p>
+        </div>
+      </div>
+      <hr class="border-secondary my-4">
+      <div class="row align-items-center">
+        <div class="col-md-6 small text-white-50">
+          &copy; 2026 N.Honest Supermarket. All rights reserved.
+        </div>
+        
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+  <script src="js/mockData.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
