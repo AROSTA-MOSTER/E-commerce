@@ -8,7 +8,6 @@ import { sendResetCodeEmail, sendWelcomeEmail } from "../services/email.service"
 const hashCode = (code: string) =>
   crypto.createHash("sha256").update(code).digest("hex");
 
-// POST /api/auth/register
 export const register = async (req: Request, res: Response) => {
   const { name, email, password } = req.body;
 
@@ -21,7 +20,6 @@ export const register = async (req: Request, res: Response) => {
     return res.status(409).json({ message: "Email already in use" });
   }
 
-  // role is never taken from the request body — no one can self-register as admin
   const user = await User.create({
     name,
     email,
@@ -40,7 +38,6 @@ export const register = async (req: Request, res: Response) => {
   });
 };
 
-// POST /api/auth/login
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
@@ -59,12 +56,10 @@ export const login = async (req: Request, res: Response) => {
   });
 };
 
-// GET /api/auth/profile  (requires authenticate middleware)
 export const profile = async (req: Request, res: Response) => {
   res.json({ user: req.user });
 };
 
-// POST /api/auth/forgot-password
 export const forgotPassword = async (req: Request, res: Response) => {
   const { email } = req.body;
 
@@ -72,7 +67,6 @@ export const forgotPassword = async (req: Request, res: Response) => {
     return res.status(400).json({ message: "Email is required" });
   }
 
-  // Always return the same message to prevent account enumeration
   const message = "If that email is registered, a reset code has been sent";
 
   const user = await User.findOne({ email });
@@ -80,7 +74,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
 
   const code = crypto.randomInt(100_000, 1_000_000).toString();
   user.resetCode = hashCode(code);
-  user.resetCodeExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+  user.resetCodeExpires = new Date(Date.now() + 10 * 60 * 1000);
   user.resetCodeAttempts = 0;
   await user.save();
 
@@ -98,7 +92,6 @@ export const forgotPassword = async (req: Request, res: Response) => {
   res.json({ message });
 };
 
-// POST /api/auth/reset-password
 export const resetPassword = async (req: Request, res: Response) => {
   const { email, code, newPassword } = req.body;
 

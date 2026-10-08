@@ -3,7 +3,6 @@ import { sendContactEmail } from "../services/email.service";
 
 const isValidEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
-// POST /api/email/send
 export const sendContactMessage = async (req: Request, res: Response) => {
   const { name, email, subject, message } = req.body;
 

@@ -1,7 +1,5 @@
 import { escapeHtml } from "../utils/sanitize";
 
-// Adapted from klab_academy_node_mastery. Styles are inline and the layout uses tables
-// because many email clients (Gmail, Outlook) ignore or strip <style> blocks.
 export const welcomeEmailTemplate = (name: string) => {
   const safeName = escapeHtml(name);
   return `

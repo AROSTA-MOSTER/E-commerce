@@ -3,7 +3,6 @@ import { UploadApiResponse } from "cloudinary";
 import cloudinary from "../config/cloudinary";
 import { Product } from "../models/product.model";
 
-/** Upload a buffer to Cloudinary and return the result */
 const uploadToCloudinary = (buffer: Buffer): Promise<UploadApiResponse> =>
   new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
@@ -16,7 +15,6 @@ const uploadToCloudinary = (buffer: Buffer): Promise<UploadApiResponse> =>
     stream.end(buffer);
   });
 
-// GET /api/products
 export const getProducts = async (req: Request, res: Response) => {
   try {
     const { search, sort } = req.query;
@@ -47,7 +45,6 @@ export const getProducts = async (req: Request, res: Response) => {
   }
 };
 
-// GET /api/products/:id
 export const getProductById = async (req: Request, res: Response) => {
   try {
     const product = await Product.findById(req.params.id);
@@ -58,7 +55,6 @@ export const getProductById = async (req: Request, res: Response) => {
   }
 };
 
-// POST /api/products  (requires auth, multipart/form-data with 'image' field)
 export const createProduct = async (req: Request, res: Response) => {
   try {
     const { name, description, price } = req.body;
@@ -99,7 +95,6 @@ export const createProduct = async (req: Request, res: Response) => {
   }
 };
 
-// PUT /api/products/:id  (requires auth)
 export const updateProduct = async (req: Request, res: Response) => {
   try {
     const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
@@ -113,7 +108,6 @@ export const updateProduct = async (req: Request, res: Response) => {
   }
 };
 
-// DELETE /api/products/:id  (requires auth)
 export const deleteProduct = async (req: Request, res: Response) => {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);

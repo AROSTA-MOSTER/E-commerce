@@ -2,10 +2,6 @@ import { getTransporter } from "../config/mail";
 import { welcomeEmailTemplate } from "../templates/welcome.template";
 import { escapeHtml } from "../utils/sanitize";
 
-/**
- * Core email sender. Prefers the Brevo HTTP API when BREVO_API_KEY is set,
- * falls back to Nodemailer SMTP otherwise.
- */
 export const sendEmail = async (
   to: string,
   subject: string,
@@ -42,7 +38,6 @@ export const sendEmail = async (
     return;
   }
 
-  // SMTP fallback
   await getTransporter().sendMail({
     from: `"${process.env.EMAIL_FROM_NAME || "E-Commerce Store"}" <${
       process.env.EMAIL_FROM || process.env.EMAIL_USER
@@ -54,7 +49,6 @@ export const sendEmail = async (
   });
 };
 
-/** Send a 6-digit OTP password reset email */
 export const sendResetCodeEmail = async (to: string, code: string): Promise<void> => {
   const subject = "Password Reset Code";
   const html = `
@@ -76,14 +70,12 @@ export const sendResetCodeEmail = async (to: string, code: string): Promise<void
   await sendEmail(to, subject, html);
 };
 
-/** Send a branded welcome email after successful registration */
 export const sendWelcomeEmail = async (to: string, name: string): Promise<void> => {
   const subject = `Welcome to ${process.env.EMAIL_FROM_NAME || "N.Honest Supermarket"}!`;
   const html = welcomeEmailTemplate(name);
   await sendEmail(to, subject, html, undefined, name);
 };
 
-/** Forward a contact-form submission to the store's inbox */
 export const sendContactEmail = async (
   name: string,
   email: string,
